@@ -1,0 +1,5 @@
+# Victoria 
+- hosts: victoria_core
+  become: yes
+  roles:
+    - { role: victoriametrics, tags: [victoria] }

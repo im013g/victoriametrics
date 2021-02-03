@@ -1,0 +1,13 @@
+version: '3.5'
+services:
+  vmselect:
+    container_name: vmselect
+    image: victoriametrics/vmselect:v{{ victoria_version }}-cluster
+    command:
+      - '--storageNode={% for host in groups['victoria_storage'] | sort %}
+{{ hostvars[host]['ansible_fqdn'] }}:{{ vmstorage_select_port }}
+{%- if not loop.last %},{% endif %}
+{% endfor %}'
+    ports:
+      - {{ vmselect_port }}:8481
+    restart: always

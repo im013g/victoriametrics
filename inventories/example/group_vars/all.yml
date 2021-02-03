@@ -1,0 +1,15 @@
+---
+
+ansible_python_interpreter: python3
+
+compose_projects: "/composes"
+  
+
+
+
+
+
+
+
+
+

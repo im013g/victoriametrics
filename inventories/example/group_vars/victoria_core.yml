@@ -1,0 +1,19 @@
+victoria_version: "1.50.1"
+victoria_user_id: "10000"
+
+# vmselect
+vmselect_project_name:  "vmselect"
+vmselect_port:          "8481"
+
+#vminsert
+vminsert_project_name:        "vminsert"
+vminsert_port:                "8480"
+vminsert_replication_factor:  "1"
+
+#vmstorage
+vmstorage_project_name:     "vmstorage"
+vmstorage_port:             "8482"
+vmstorage_insert_port:      "8400"
+vmstorage_select_port:      "8401"
+vmstorage_data_folder:      "storage"
+vmstorage_retentionPeriod:  "180d"

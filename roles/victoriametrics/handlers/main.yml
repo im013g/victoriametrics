@@ -1,0 +1,52 @@
+---
+
+- name: "Restart vmstorage"
+  service:
+    name: "vmstorage-docker@{{ vmstorage_project_name }}"
+    state: restarted
+
+- name: "Restart vmselect"
+  service:
+    name: "vmselect-docker@{{ vmselect_project_name }}"
+    state: restarted
+
+- name: "Restart vminsert"
+  service:
+    name: "vminsert-docker@{{ vminsert_project_name }}"
+    state: restarted
+
+- name: "Sleep for victoria services for 15 seconds"
+  wait_for:
+    timeout: 15
+  delegate_to: localhost
+  become: no
+
+- name:  "Check vmstorage"
+  uri:
+    url: "http://{{ item }}:{{ vmstorage_port }}/metrics"
+    return_content: no
+    timeout: 15
+    method: GET
+  register: vmstorage_http_answer
+  failed_when: vmstorage_http_answer.status != 200
+  loop: "{{ groups.victoria_storage }}"
+
+- name:  "Check vmselect"
+  uri:
+    url: "http://{{ item }}:{{ vmselect_port }}/metrics"
+    return_content: no
+    timeout: 15
+    method: GET
+  register: vmselect_http_answer
+  failed_when: vmselect_http_answer.status != 200
+  loop: "{{ groups.victoria_api }}"
+
+- name:  "Check vminsert"
+  uri:
+    url: "http://{{ item }}:{{ vminsert_port }}/metrics"
+    return_content: no
+    timeout: 15
+    method: GET
+  register: vminsert_http_answer
+  failed_when: vminsert_http_answer.status != 200
+  loop: "{{ groups.victoria_api }}"

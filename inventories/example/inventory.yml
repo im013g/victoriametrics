@@ -1,0 +1,17 @@
+all:
+  children:
+    victoria_core:
+      children:
+        victoria_api:
+        victoria_storage:
+         
+victoria_api:
+  hosts:
+    victoria-api-01.example.lan:
+    victoria-api-02.example.lan:
+
+victoria_storage:
+  hosts:
+    victoria-storage-01.example.lan:
+    victoria-storage-02.example.lan:
+    victoria-storage-03.example.lan:
