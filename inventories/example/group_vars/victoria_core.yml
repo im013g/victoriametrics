@@ -1,5 +1,6 @@
 victoria_version: "1.50.1"
-victoria_user_id: "10000"
+victoria_user_id:   "10000"
+victoria_group_id:  "10000"
 
 # vmselect
 vmselect_project_name:  "vmselect"

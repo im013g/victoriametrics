@@ -1,8 +1,9 @@
-version: '3.5'
+version: '3.7'
 services:
   vmstorage:
     container_name: vmstorage
     image: victoriametrics/vmstorage:v{{ victoria_version }}-cluster
+    user: "{{ victoria_user_id }}"
     ports:
       - {{ vmstorage_port }}:8482
       - {{ vmstorage_insert_port }}:8400
