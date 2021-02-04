@@ -1,0 +1,42 @@
+---
+
+- name: vmstorage | Create poject dir
+  file:
+    name: "{{ compose_projects }}/{{ vmstorage_project_name }}"
+    state: directory
+    mode: "0755"
+    owner: "root"
+    group: "root"
+
+- name: vmstorage | Create mount folder
+  file:
+    name: "{{ compose_projects }}/{{ vmstorage_project_name }}/{{ vmstorage_data_folder }}"
+    state: directory
+    mode: "0755"
+    owner: "{{ victoria_user_id }}"
+    group: "{{ victoria_group_id }}"
+
+- name: vmstorage | Copy compose files
+  template:
+    src: "{{ item.j2 }}"
+    dest: "{{ item.target }}"
+    mode: "0664"
+    owner: "root"
+    group: "root"
+  loop:
+    - { j2: 'docker-compose.vmstorage.yml.j2', target: "{{ compose_projects }}/{{ vmstorage_project_name }}/docker-compose.yml" }
+    - { j2: 'vmstorage-docker@.service.j2',    target: "/etc/systemd/system/vmstorage-docker@.service" }
+  notify: 
+    - "Restart vmstorage"
+    - "Sleep for victoria services for 15 seconds"
+    - "Check vmstorage"
+
+- name: vmstorage | UP containers via systemd
+  systemd:
+    name: "vmstorage-docker@{{ vmstorage_project_name }}"
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  notify: 
+     - "Sleep for victoria services for 15 seconds"
+     - "Check vmstorage"

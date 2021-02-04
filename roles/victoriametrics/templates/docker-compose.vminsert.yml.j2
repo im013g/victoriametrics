@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  vminsert:
+    container_name: vminsert
+    image: victoriametrics/vminsert:v{{ victoria_version }}-cluster
+    user: "{{ victoria_user_id }}"
+    command:
+      - '--replicationFactor={{ vminsert_replication_factor }}'
+      - '--storageNode={% for host in groups['victoria_storage'] | sort %}
+{{ hostvars[host]['ansible_fqdn'] }}:{{ vmstorage_insert_port }}
+{%- if not loop.last %},{% endif %}
+{% endfor %}'
+    ports:
+      - {{ vminsert_port }}:8480
+    restart: always

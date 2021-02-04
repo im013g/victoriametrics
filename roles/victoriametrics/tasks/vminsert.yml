@@ -1,0 +1,34 @@
+---
+
+- name: vminsert | Create poject dir
+  file:
+    name: "{{ compose_projects }}/{{ vminsert_project_name }}"
+    state: directory
+    mode: "0755"
+    owner: "root"
+    group: "root"
+
+- name: vminsert | Copy compose files
+  template:
+    src: "{{ item.j2 }}"
+    dest: "{{ item.target }}"
+    mode: "0664"
+    owner: "root"
+    group: "root"
+  loop:
+    - { j2: 'docker-compose.vminsert.yml.j2', target: "{{ compose_projects }}/{{ vminsert_project_name }}/docker-compose.yml" }
+    - { j2: 'vminsert-docker@.service.j2',    target: "/etc/systemd/system/vminsert-docker@.service" }
+  notify: 
+    - "Restart vminsert"
+    - "Sleep for victoria services for 15 seconds"
+    - "Check vminsert"
+
+- name: vminsert | UP containers via systemd
+  systemd:
+    name: "vminsert-docker@{{ vminsert_project_name }}"
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  notify: 
+     - "Sleep for victoria services for 15 seconds"
+     - "Check vminsert"
